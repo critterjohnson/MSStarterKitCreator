@@ -20,11 +20,12 @@ def clone_and_copy(clone_from:str, dest:str, folder_names:list):
 def main():
     with open("info.json", "r") as file:
         settings = json.load(file)
-    eighth = he.get_people_answered(settings["event_id"], settings["token"], "8th grade", "26350001")
-    seventh = he.get_people_answered(settings["event_id"], settings["token"], "7th grade", "26350003")
-    seventh.extend(he.get_people_answered(settings["event_id"], settings["token"], "7th", "26350003"))
-    seventh.extend(he.get_people_answered(settings["event_id"], settings["token"], "7", "26350003"))
-    sixth = he.get_people_answered(settings["event_id"], settings["token"], "6", "26350003")
+    attendees = he.get_attendee_list(settings["event_id"], settings["token"])
+    eighth = he.get_people_answered(attendees, "8th grade", "26350001")
+    seventh = he.get_people_answered(attendees, "7th grade", "26350003")
+    seventh.extend(he.get_people_answered(attendees, "7th", "26350003"))
+    seventh.extend(he.get_people_answered(attendees, "7", "26350003"))
+    sixth = he.get_people_answered(attendees, "6", "26350003")
     ms = []
     ms.extend(eighth)
     ms.extend(seventh)
@@ -34,7 +35,7 @@ def main():
         name = (person["profile"]["first_name"] + "_" + person["profile"]["last_name"]).lower()
         if name not in names:
             names.append(name)
-    clone_and_copy("https://github.com/hackbi/githubworkshop.git", "dest", names)
+    clone_and_copy(settings["repo_url"], "dest", names)
 
 if __name__ == "__main__":
     main()
